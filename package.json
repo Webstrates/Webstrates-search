@@ -1,0 +1,27 @@
+{
+  "name": "webstrates-search",
+  "version": "1.0.0",
+  "description": "Search through Webstrates using ElasticSearch.",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "index": "node perform-full-index.js"
+  },
+  "keywords": [
+    "webstrates",
+    "elasticsearch",
+    "mongodb"
+  ],
+  "author": {
+    "name": "Kristian Borup Antonsen",
+    "email": "kristian@derfor.dk"
+  },
+  "license": "Apache-2.0",
+  "dependencies": {
+    "client-sessions": "^0.8.0",
+    "elasticsearch": "^15.3.1",
+    "express": "^4.16.4",
+    "mongo-oplog": "^2.1.4",
+    "mongodb": "^3.1.13"
+  }
+}
