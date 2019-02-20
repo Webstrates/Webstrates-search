@@ -9,6 +9,7 @@
   },
   "keywords": [
     "webstrates",
+    "search",
     "elasticsearch",
     "mongodb"
   ],
@@ -16,6 +17,10 @@
     "name": "Kristian Borup Antonsen",
     "email": "kristian@derfor.dk"
   },
+  "bugs": {
+    "url": "https://github.com/Webstrates/search-backend/issues"
+  },
+  "homepage": "https://github.com/Webstrates/search-backend#readme",
   "license": "Apache-2.0",
   "dependencies": {
     "client-sessions": "^0.8.0",
