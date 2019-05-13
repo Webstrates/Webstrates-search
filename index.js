@@ -1,23 +1,33 @@
 'use strict';
 const config = require('./config.js')
-
 /**
  * This part takes care of all changes to MongoDB and puts them in ElasticSearch.
  */
+const throttler = require("./throttler.js");
 const elastic = require('./elastic.js');
 const MongoOplog = require('mongo-oplog');
 const oplog = MongoOplog(config.mongodb, { ns: 'webstrate.webstrates' });
 
 oplog.tail();
 
+// Webstrate creation.
 oplog.on('insert', (data) =>
 	elastic.insert(data.o._id, data.o._data, data.o._m.ctime, data.o._m.mtime));
 
-oplog.on('update', (data) =>
-	elastic.insert(data.o._id, data.o._data, data.o._m.ctime, data.o._m.mtime));
+// Webstrate modifications like insertions/deletion.
+oplog.on("update", data =>
+	throttler(elastic.insert, data.o._id, // These are the throttle arguments.
+		data.o._id, data.o._data, data.o._m.ctime, data.o._m.mtime)); // Actual arguments to elastic.insert.
 
+// Webstrate deletion.
 oplog.on('delete', (data) =>
 	elastic.delete(data.o._id));
+
+oplog.on('error', (error) =>
+	console.error(error));
+
+oplog.on('end', () =>
+	console.error('Stream ended.'));
 
 /**
  * And this here is our search HTTP API.
@@ -34,6 +44,7 @@ if (!config.secret) {
 app.use(sessions({ secret: config.secret, cookieName: 'session' }));
 
 app.get('/', async (req, res) => {
+
 	res.header('Access-Control-Allow-Origin', '*');
 
 	const query = req.query.q;
